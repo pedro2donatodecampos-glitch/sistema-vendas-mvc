@@ -6,7 +6,7 @@
     <div class="sale-summary">
         <div><span>Data</span><strong><?= e(date('d/m/Y H:i', strtotime($sale['created_at']))) ?></strong></div>
         <div><span>Cliente</span><strong><?= e($sale['customer_name'] ?? 'Consumidor final') ?></strong></div>
-        <div><span>Pagamento</span><strong><?= e($sale['payment_method']) ?></strong></div>
+        <div><span>Pagamento</span><strong><?= e($sale['payment_method']) ?></strong><?php if ($receiptNote !== ''): ?><small class="text-muted"><?= e($receiptNote) ?></small><?php endif; ?></div>
         <div><span>Status</span><strong><?= $sale['status'] === 'completed' ? 'Concluída' : 'Cancelada' ?></strong></div>
     </div>
     <div class="table-responsive mt-4">

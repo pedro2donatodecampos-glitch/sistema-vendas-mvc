@@ -7,19 +7,20 @@
         <section class="panel">
             <div class="panel-heading"><div><h2>Produtos disponíveis</h2><p>Selecione um produto para adicionar.</p></div></div>
             <?php if ($products === []): ?>
-                <div class="empty-state compact"><h2>Sem produtos em estoque</h2><p>Reponha o estoque para iniciar uma venda.</p></div>
+                <div class="empty-state compact"><h2>Sem produtos em estoque</h2><p>Cadastre ou reponha produtos para iniciar uma venda.</p><a class="btn btn-outline-primary" href="/products">Ir para produtos</a></div>
             <?php else: ?>
                 <div class="product-list">
                 <?php foreach ($products as $product): ?>
+                    <?php $expired = \App\Models\Product::isExpired($product['expires_at']); ?>
                     <div class="product-row">
-                        <div class="product-thumb"><?= e(mb_substr($product['name'], 0, 1)) ?></div>
-                        <div class="product-info"><strong><?= e($product['name']) ?></strong><span><?= e($product['category']) ?> · <?= (int) $product['stock'] ?> disponíveis</span></div>
+                        <?php if ($product['image']): ?><img class="product-thumb product-image" src="<?= e($product['image']) ?>" alt=""><?php else: ?><div class="product-thumb"><?= e(mb_substr($product['name'], 0, 1)) ?></div><?php endif; ?>
+                        <div class="product-info"><strong><?= e($product['name']) ?></strong><span><?= e($product['category']) ?> · <?= (int) $product['stock'] ?> disponíveis<?php if ($expired): ?> · <b class="text-danger">Vencido</b><?php endif; ?></span></div>
                         <div class="product-price"><?= money($product['unit_price']) ?></div>
                         <form class="add-product-form" method="post" action="/cart/items">
                             <?= csrf_field() ?>
                             <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
                             <input class="form-control form-control-sm quantity-input" type="number" name="quantity" value="1" min="1" max="<?= (int) $product['stock'] ?>" aria-label="Quantidade">
-                            <button class="btn btn-sm btn-primary" type="submit" aria-label="Adicionar <?= e($product['name']) ?>">+</button>
+                            <button class="btn btn-sm btn-primary" type="submit" aria-label="Adicionar <?= e($product['name']) ?>" <?= $expired ? 'disabled' : '' ?>>+</button>
                         </form>
                     </div>
                 <?php endforeach; ?>
@@ -65,7 +66,7 @@
                         <label class="form-label" for="payment_method">Forma de pagamento</label>
                         <select class="form-select" id="payment_method" name="payment_method" required>
                             <option value="">Selecione</option>
-                            <?php foreach (\App\Services\PaymentMethodFactory::all() as $method): ?><option value="<?= e($method) ?>"><?= e($method) ?></option><?php endforeach; ?>
+                            <?php foreach ($paymentMethods as $method): ?><option value="<?= e($method) ?>"><?= e($method) ?></option><?php endforeach; ?>
                         </select>
                     </div>
                     <button class="btn btn-primary btn-lg w-100" type="submit">Finalizar venda · <?= money($total) ?></button>

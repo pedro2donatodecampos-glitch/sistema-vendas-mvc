@@ -5,8 +5,12 @@ namespace App\Controllers;
 
 use App\Core\Database;
 use App\Core\View;
+use App\Models\Customer;
 use App\Repositories\CustomerRepository;
 
+/**
+ * Controller da tela "Cadastro de clientes" (CRUD completo).
+ */
 final class CustomerController
 {
     private CustomerRepository $customers;
@@ -65,22 +69,14 @@ final class CustomerController
 
     private function save(?int $id = null): void
     {
-        $name = trim((string) ($_POST['name'] ?? ''));
-        $email = trim((string) ($_POST['email'] ?? ''));
-        $phone = trim((string) ($_POST['phone'] ?? ''));
-        $document = trim((string) ($_POST['document'] ?? ''));
-
-        if ($name === '' || ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL))) {
-            flash('error', $name === '' ? 'Informe o nome do cliente.' : 'Informe um e-mail válido.');
+        $customer = Customer::fromInput($_POST);
+        $error = $customer->validate();
+        if ($error !== null) {
+            flash('error', $error);
             redirect($id === null ? '/customers/create' : '/customers/' . $id . '/edit');
         }
 
-        $this->customers->save([
-            'name' => $name,
-            'email' => $email,
-            'phone' => $phone,
-            'document' => $document,
-        ], $id);
+        $this->customers->save($customer, $id);
 
         flash('success', $id === null ? 'Cliente cadastrado com sucesso.' : 'Cliente atualizado com sucesso.');
         redirect('/customers');

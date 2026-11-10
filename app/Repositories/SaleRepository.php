@@ -5,6 +5,9 @@ namespace App\Repositories;
 
 use PDO;
 
+/**
+ * Padrão Repository: consultas de vendas usadas no carrinho e nos relatórios.
+ */
 final class SaleRepository
 {
     public function __construct(private PDO $db)
@@ -74,4 +77,11 @@ final class SaleRepository
         return $statement->fetch();
     }
 
+    /** Exclui do histórico somente vendas já canceladas (o estoque já foi devolvido). */
+    public function deleteCancelled(int $id): bool
+    {
+        $statement = $this->db->prepare('DELETE FROM sales WHERE id = ? AND status = "cancelled"');
+        $statement->execute([$id]);
+        return $statement->rowCount() === 1;
+    }
 }

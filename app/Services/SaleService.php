@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Product;
 use PDO;
 
+/**
+ * Service Layer: regras de negócio da venda (finalizar e cancelar) dentro de transações.
+ */
 final class SaleService
 {
     public function __construct(private PDO $db)
@@ -41,6 +45,10 @@ final class SaleService
                     throw new \DomainException('Estoque insuficiente ou produto indisponível: ' . ($product['name'] ?? 'produto'));
                 }
 
+                if (Product::isExpired($product['expires_at'] ?? null)) {
+                    throw new \DomainException('Produto vencido não pode ser vendido: ' . $product['name']);
+                }
+
                 $quantity = (int) $quantity;
                 $items[] = [
                     'product_id' => (int) $product['id'],
@@ -54,7 +62,7 @@ final class SaleService
             $sale = $this->db->prepare(
                 'INSERT INTO sales (customer_id, total, payment_method) VALUES (?, ?, ?)'
             );
-            $sale->execute([$customer, $total, $method]);
+            $sale->execute([$customer, $total, $method->name()]);
             $saleId = (int) $this->db->lastInsertId();
             $itemInsert = $this->db->prepare(
                 'INSERT INTO sale_items (sale_id, product_id, product_name, quantity, unit_price) VALUES (?, ?, ?, ?, ?)'

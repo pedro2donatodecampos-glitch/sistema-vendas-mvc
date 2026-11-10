@@ -67,6 +67,8 @@ h2 { font-size: 1.25rem; margin: 0; }
 .product-row { align-items: center; border-bottom: 1px solid #f1edf0; display: flex; gap: .85rem; padding: 1rem 0; }
 .product-row:last-child { border-bottom: 0; padding-bottom: 0; }
 .product-thumb { align-items: center; background: var(--rose); border-radius: 10px; color: var(--plum); display: flex; flex: 0 0 45px; font: 700 1.25rem "Playfair Display", serif; height: 45px; justify-content: center; }
+.product-image { border: 1px solid var(--line); height: 45px; object-fit: cover; width: 45px; }
+.product-image.large { flex-basis: 72px; height: 72px; width: 72px; }
 .product-info { display: flex; flex: 1; flex-direction: column; min-width: 0; }
 .product-info strong, .cart-item strong { font-size: .9rem; }
 .product-info span, .cart-item-top span { color: var(--muted); font-size: .76rem; margin-top: .2rem; }

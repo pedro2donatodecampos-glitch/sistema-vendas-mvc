@@ -37,6 +37,10 @@
                                 <form class="d-inline" method="post" action="/sales/<?= (int) $sale['id'] ?>/cancel" onsubmit="return confirm('Cancelar a venda e devolver os itens ao estoque?')">
                                     <?= csrf_field() ?><button class="btn btn-sm btn-outline-danger" type="submit">Cancelar</button>
                                 </form>
+                            <?php else: ?>
+                                <form class="d-inline" method="post" action="/sales/<?= (int) $sale['id'] ?>/delete" onsubmit="return confirm('Excluir definitivamente esta venda cancelada do histórico?')">
+                                    <?= csrf_field() ?><button class="btn btn-sm btn-danger" type="submit">Excluir</button>
+                                </form>
                             <?php endif; ?>
                         </td>
                     </tr>

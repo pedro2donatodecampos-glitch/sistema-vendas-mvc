@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Customer;
 use PDO;
 
+/**
+ * Padrão Repository: único lugar que conhece o SQL da tabela de clientes.
+ */
 final class CustomerRepository
 {
     public function __construct(private PDO $db)
@@ -23,8 +27,9 @@ final class CustomerRepository
         return $statement->fetch() ?: null;
     }
 
-    public function save(array $data, ?int $id = null): void
+    public function save(Customer $customer, ?int $id = null): void
     {
+        $data = $customer->toArray();
         if ($id === null) {
             $statement = $this->db->prepare(
                 'INSERT INTO customers (name, email, phone, document) VALUES (:name, :email, :phone, :document)'

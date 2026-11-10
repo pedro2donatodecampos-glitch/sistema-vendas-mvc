@@ -21,6 +21,7 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="/sales/new">Carrinho</a>
                 <a class="nav-link" href="/customers">Clientes</a>
+                <a class="nav-link" href="/products">Produtos</a>
                 <a class="nav-link" href="/reports">Relatórios</a>
             </div>
         </div>
